@@ -1,3 +1,4 @@
+import 'package:crud_products/routes.dart';
 import 'package:flutter/material.dart';
  
 void main() => runApp(MyApp());
@@ -7,16 +8,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'CRUD Products',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Material App Bar'),
-        ),
-        body: Center(
-          child: Container(
-            child: Text('Hello World'),
-          ),
-        ),
-      ),
+      debugShowCheckedModeBanner: false,
+      routes: LocalRoutes.routes,
+      initialRoute: '/login',
     );
   }
 }
