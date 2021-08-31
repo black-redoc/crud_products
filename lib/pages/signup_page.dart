@@ -10,6 +10,20 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  TextEditingController? _emailController;
+  TextEditingController? _passwordController;
+  TextEditingController? _confirmPasswordController;
+  bool _obscurePassword = true;
+  Icon _passwordVisibilityIcon = Icon(Icons.visibility);
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+    _passwordController = TextEditingController();
+    _confirmPasswordController = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -18,7 +32,8 @@ class _SignupPageState extends State<SignupPage> {
         height: size.height,
         child: Stack(
           children: <Widget>[
-            _background(height: size.height)
+            _background(height: size.height),
+            _formSignup(height: size.height, width: size.width, context: context),
           ]
         )
       )
@@ -41,4 +56,149 @@ class _SignupPageState extends State<SignupPage> {
       ),
     ),
   );
+
+  Widget _formSignup({
+    double? height,
+    double? width,
+    BuildContext? context
+  }) {
+    return Positioned(
+      top: 0,
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+            height: height! * 0.65,
+            width: width! * 0.8,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.white,
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.grey,
+                  blurRadius: 5
+                )
+              ]
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  children: [
+                    _formTitle(),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: 10,
+                        left: 80,
+                        right: 80
+                      ),
+                      child: Divider(
+                        color: Colors.black45,
+                        thickness: 1,
+                      )
+                    ),
+                  ],
+                ),
+                _formFields(),
+              ]
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _formTitle() => Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      Text(
+        "Registrate",
+        style: TextStyle(
+          fontSize: 24,
+          letterSpacing: 0.8
+        )
+      )
+    ],
+  );
+
+  Widget _formFields() => Container(
+    height: 180,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: <Widget>[
+        TextFormField(
+          controller: _emailController,
+          style: TextStyle(
+            fontSize: 14
+          ),
+          decoration: InputDecoration(
+            labelText: "email",
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 0,
+              horizontal: 25
+            )
+          ),
+        ),
+        TextFormField(
+          controller: _passwordController,
+          style: TextStyle(
+            fontSize: 14
+          ),
+          obscureText: _obscurePassword,
+          decoration: InputDecoration(
+            labelText: "contraseña",
+            suffixIcon: IconButton(
+              icon: Container(child: _passwordVisibilityIcon),
+              onPressed: _onPasswordVisibilityChange,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 0,
+              horizontal: 25
+            )
+          ),
+        ),
+        TextFormField(
+          controller: _confirmPasswordController,
+          style: TextStyle(
+            fontSize: 14
+          ),
+          obscureText: _obscurePassword,
+          decoration: InputDecoration(
+            labelText: "confirmar contraseña",
+            suffixIcon: IconButton(
+              icon: Container(child: _passwordVisibilityIcon),
+              onPressed: _onPasswordVisibilityChange,
+            ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 0,
+              horizontal: 25
+            )
+          ),
+        )
+      ]
+    ),
+  );
+
+  void _onPasswordVisibilityChange() {
+    setState(() {
+      if (_obscurePassword) {
+        _passwordVisibilityIcon = Icon(Icons.visibility_off);
+      } else {
+        _passwordVisibilityIcon = Icon(Icons.visibility);
+      }
+      _obscurePassword = !_obscurePassword;
+    });
+  }
 }
