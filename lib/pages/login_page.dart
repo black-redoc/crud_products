@@ -69,43 +69,45 @@ class _LoginPageState extends State<LoginPage> {
       top: 0,
       bottom: 0,
       child: Center(
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 30, horizontal: 40),
-          height: height! * 0.5,
-          width: width! * 0.8,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15),
-            color: Colors.white,
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 5
-              )
-            ]
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  _formTitle(),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      bottom: 20,
-                      left: 80,
-                      right: 80
+        child: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 30, horizontal: 25),
+            height: height! * 0.65,
+            width: width! * 0.8,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.white,
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.grey,
+                  blurRadius: 5
+                )
+              ]
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Column(
+                  children: <Widget>[
+                    _formTitle(),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        bottom: 10,
+                        left: 80,
+                        right: 80
+                      ),
+                      child: Divider(
+                        color: Colors.black45,
+                        thickness: 1,
+                      )
                     ),
-                    child: Divider(
-                      color: Colors.black45,
-                      thickness: 1,
-                    )
-                  ),
-                ]
-              ),
-              _formFields(),
-              _submitButton(context: context),
-              _formSignUpRedirection(context: context),
-            ]
+                  ]
+                ),
+                _formFields(),
+                _submitButton(context: context),
+                _formSignUpRedirection(context: context),
+              ]
+            ),
           ),
         ),
       )
@@ -132,15 +134,25 @@ class _LoginPageState extends State<LoginPage> {
       children: <Widget>[
         TextFormField(
           controller: _emailController,
+          style: TextStyle(
+            fontSize: 14
+          ),
           decoration: InputDecoration(
             labelText: "email",
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 0,
+              horizontal: 25
             )
           ),
         ),
         TextFormField(
           controller: _passwordController,
+          style: TextStyle(
+            fontSize: 14
+          ),
           obscureText: _obscurePassword,
           decoration: InputDecoration(
             labelText: "contraseña",
@@ -150,6 +162,10 @@ class _LoginPageState extends State<LoginPage> {
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20),
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 0,
+              horizontal: 25
             )
           ),
         )
@@ -177,20 +193,26 @@ class _LoginPageState extends State<LoginPage> {
   Widget _formSignUpRedirection({BuildContext? context}) => Row(
     mainAxisAlignment: MainAxisAlignment.end,
     children: <Widget>[
-      Text(
-        "Aún no tienes cuenta? ",
-        style: TextStyle(
-          fontSize: 15,
-        )
-      ),
-      TextButton(
-        onPressed: () => _redirectToSignUp(context: context),
-        child: Text(
-          "Registrate!",
-          style: TextStyle(
-            fontSize: 15,
+      Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Text(
+            "Aún no tienes cuenta? ",
+            style: TextStyle(
+              fontSize: 15,
+            )
+          ),
+          TextButton(
+            onPressed: () => _redirectToSignUp(context: context),
+            child: Text(
+              "Registrate!",
+              style: TextStyle(
+                fontSize: 15,
+              )
+            )
           )
-        )
+        ],
       )
     ],
   );
