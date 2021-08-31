@@ -71,7 +71,7 @@ class _SignupPageState extends State<SignupPage> {
         child: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.symmetric(vertical: 30, horizontal: 25),
-            height: height! * 0.65,
+            height: height! * 0.68,
             width: width! * 0.8,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
@@ -104,6 +104,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 _formFields(),
                 _submitButton(context: context),
+                _formLoginRedirection(context: context),
               ]
             ),
           ),
@@ -126,7 +127,7 @@ class _SignupPageState extends State<SignupPage> {
   );
 
   Widget _formFields() => Container(
-    height: 180,
+    height: 160,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: <Widget>[
@@ -209,9 +210,35 @@ class _SignupPageState extends State<SignupPage> {
     ],
   );
 
+  Widget _formLoginRedirection({BuildContext? context}) => Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: <Widget>[
+      Text(
+        "Ya tienes cuenta? ",
+        style: TextStyle(
+          fontSize: 14,
+        )
+      ),
+      TextButton(
+        onPressed: () => _redirectToLogin(context: context),
+        child: Text(
+          "Inicia sesión!",
+          style: TextStyle(
+            fontSize: 15,
+          )
+        )
+      )
+    ],
+  );
+
   void _onSubmit({BuildContext? context}) {
     Navigator.of(context!).pushNamed("/");
   }
+
+  void _redirectToLogin({
+    BuildContext? context
+  }) => Navigator.of(context!).pushNamed("/login");
+
 
   void _onPasswordVisibilityChange() {
     setState(() {
