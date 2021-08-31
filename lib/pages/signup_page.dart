@@ -103,6 +103,7 @@ class _SignupPageState extends State<SignupPage> {
                   ],
                 ),
                 _formFields(),
+                _submitButton(context: context),
               ]
             ),
           ),
@@ -190,6 +191,27 @@ class _SignupPageState extends State<SignupPage> {
       ]
     ),
   );
+
+  Widget _submitButton({BuildContext? context}) => Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: <Widget>[
+      MaterialButton(
+        onPressed: () => _onSubmit(context: context),
+        color: Colors.red,
+        child: Text(
+          "Registrar",
+          style: TextStyle(
+            fontSize: 18,
+            color: Colors.white
+          )
+        ),
+      )
+    ],
+  );
+
+  void _onSubmit({BuildContext? context}) {
+    Navigator.of(context!).pushNamed("/");
+  }
 
   void _onPasswordVisibilityChange() {
     setState(() {

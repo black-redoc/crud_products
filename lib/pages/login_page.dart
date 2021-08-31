@@ -222,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
   }) => Navigator.of(context!).pushNamed("/signup");
 
   void _onSubmit({BuildContext? context}) {
-    Navigator.of(context!).pushNamed("/");
+    Navigator.of(context!).pushNamed("/login");
   }
 
   void _onPasswordVisibilityChange() {
