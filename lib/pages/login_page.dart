@@ -1,5 +1,7 @@
+import 'package:crud_products/repository/user_repository.dart';
 import 'package:crud_products/util/clippers/bottonWaveClipper.dart';
 import 'package:crud_products/util/colors.dart';
+import 'package:crud_products/util/validators/user_validator.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -14,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController? _passwordController;
   Icon? _passwordVisibilityIcon;
   bool _obscurePassword = true;
+  UserRepository? _userRepository;
 
   @override
   void initState() {
@@ -21,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _passwordVisibilityIcon = Icon(Icons.visibility);
+    _userRepository = UserRepository();
   }
 
   @override
@@ -221,8 +225,55 @@ class _LoginPageState extends State<LoginPage> {
     BuildContext? context
   }) => Navigator.of(context!).pushNamed("/signup");
 
-  void _onSubmit({BuildContext? context}) {
-    Navigator.of(context!).pushNamed("/login");
+  void _onSubmit({BuildContext? context}) async{
+    if (!UserValidator.isEmailValid(email: _emailController!.text)) {
+      ScaffoldMessenger
+      .of(context!)
+      .showSnackBar(
+        SnackBar(
+          content: Text("El email es invalido, debe ser como este user@example.com")
+        )
+      );
+    } else if (!UserValidator.isPasswordValid(password: _passwordController!.text)) {
+      ScaffoldMessenger
+      .of(context!)
+      .showSnackBar(
+        SnackBar(
+          content: Text(
+            "La contraseña es invalida, debe tener minimo 8 caracteres, "
+            "1 letra y 1 número."
+          )
+        )
+      );
+    } else {
+      try {
+        final user = await _userRepository!.signInWithCredentials(
+          _emailController!.text,
+          _passwordController!.text
+        );
+
+        ScaffoldMessenger
+        .of(context!)
+        .showSnackBar(
+          SnackBar(
+            content: Text(
+              "Inicio con exito!"
+            )
+          )
+        );
+        Navigator.of(context).pushNamed("/");
+      } catch (e) {
+        ScaffoldMessenger
+        .of(context!)
+        .showSnackBar(
+          SnackBar(
+            content: Text(
+              "Credenciales incorrectas!"
+            )
+          )
+        );
+      }
+    }
   }
 
   void _onPasswordVisibilityChange() {
