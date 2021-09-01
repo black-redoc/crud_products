@@ -1,5 +1,7 @@
+import 'package:crud_products/repository/user_repository.dart';
 import 'package:crud_products/util/clippers/bottonWaveClipper.dart';
 import 'package:crud_products/util/colors.dart';
+import 'package:crud_products/util/validators/user_validator.dart';
 import 'package:flutter/material.dart';
 
 class SignupPage extends StatefulWidget {
@@ -15,6 +17,7 @@ class _SignupPageState extends State<SignupPage> {
   TextEditingController? _confirmPasswordController;
   bool _obscurePassword = true;
   Icon _passwordVisibilityIcon = Icon(Icons.visibility);
+  UserRepository? _userRepository;
 
   @override
   void initState() {
@@ -22,6 +25,7 @@ class _SignupPageState extends State<SignupPage> {
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _confirmPasswordController = TextEditingController();
+    _userRepository = UserRepository();
   }
 
   @override
@@ -231,8 +235,68 @@ class _SignupPageState extends State<SignupPage> {
     ],
   );
 
-  void _onSubmit({BuildContext? context}) {
-    Navigator.of(context!).pushNamed("/");
+  void _onSubmit({BuildContext? context}) async {
+    if (!UserValidator.isEmailValid(email: _emailController!.text)) {
+      ScaffoldMessenger
+      .of(context!)
+      .showSnackBar(
+        SnackBar(
+          content: Text("El email es invalido, debe ser como este user@example.com")
+        )
+      );
+    } else if (!UserValidator.isPasswordValid(password: _passwordController!.text)) {
+      ScaffoldMessenger
+      .of(context!)
+      .showSnackBar(
+        SnackBar(
+          content: Text(
+            "La contraseña es invalida, debe tener minimo 8 caracteres, "
+            "1 letra y 1 número."
+          )
+        )
+      );
+    } else if (_passwordController!.text != _confirmPasswordController!.text) {
+      ScaffoldMessenger
+      .of(context!)
+      .showSnackBar(
+        SnackBar(
+          content: Text(
+            "Las contraseñas no coinciden."
+          )
+        )
+      );
+    } else {
+      try {
+        await _userRepository!.signUpWithCredentials(
+          _emailController!.text,
+          _passwordController!.text
+        );
+
+        _emailController!..clear()..clearComposing();
+        _passwordController!..clear()..clearComposing();
+        _confirmPasswordController!..clear()..clearComposing();
+
+        ScaffoldMessenger
+        .of(context!)
+        .showSnackBar(
+          SnackBar(
+            content: Text(
+              "Registro con exito!"
+            )
+          )
+        );
+      } catch(_) {
+        ScaffoldMessenger
+        .of(context!)
+        .showSnackBar(
+          SnackBar(
+            content: Text(
+              "Hubo un error al registrar!"
+            )
+          )
+        );
+      }
+    }
   }
 
   void _redirectToLogin({
