@@ -128,7 +128,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                       fontSize: 14
                     ),
                     decoration: InputDecoration(
-                      labelText: "Descripcción",
+                      labelText: "Descripción",
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10)
                       ),
