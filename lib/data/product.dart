@@ -21,7 +21,7 @@ class Product {
   Product.fromMap(Map<String, dynamic> map): this(
     name: '${map["name"]}',
     description: '${map["description"]}',
-    stock: map["stock"],
+    stock: int.parse('${map["stock"]}'),
     price: double.parse('${map["price"]}')
   );
 
