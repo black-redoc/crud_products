@@ -259,7 +259,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _deleteProduct(Product product) async {
-    await _productRepository.deleteProduct(product);
+    try {
+      await _productRepository.deleteProduct(product);
+      ScaffoldMessenger
+        .of(context)
+        .showSnackBar(
+          SnackBar(
+            content: Text("${product.name} eliminado con exito!")
+          )
+        );
+    } catch (e) {
+      print("Error $e");
+      ScaffoldMessenger
+        .of(context)
+        .showSnackBar(
+          SnackBar(
+            content: Text("No se pudo eliminar!")
+          )
+        );
+    }
+    Navigator.of(context).pushNamed("/");
   }
 
   Future<bool> _showUpdatePage(Product product) async {
