@@ -43,6 +43,6 @@ class ProductRepository {
     .update(
       product.toMap()
     ).then((value) => print("Product ${product.name} updated"))
-    .catchError((error) => print("Error when updating product ${product.name}"));
+    .catchError((error) => print("Error when updating product ${product.name}\n $error"));
   }
 }
