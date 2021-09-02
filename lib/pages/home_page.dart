@@ -80,12 +80,55 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white70
                 )
               ),
+            ),
+            GestureDetector(
+              onTap: _showHelpDialog,
+              child: Container(
+                padding: EdgeInsets.only(left: 10),
+                child: Icon(
+                  Icons.help_outline,
+                  color: Colors.grey
+                )
+              )
             )
           ],
         )
       ]
     )
   );
+  void _showHelpDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Icon(
+          Icons.error_outline_rounded,
+          color: LocalColors.purple_primary,
+          size: 34
+        ),
+        content: Text(
+          "Para editar desliza el producto a la izquierda "
+          "y para eliminar desliza hacia la derecha.",
+          textAlign: TextAlign.justify,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
+          )
+        ),
+        actions: <Widget>[
+          MaterialButton(
+            color: LocalColors.purple_dark,
+            child: Text(
+              "OK",
+              style: TextStyle(
+                color: Colors.white70
+              )
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          )
+        ],
+      )
+    );
+  }
 
   Widget _productList({ double? width }) {
     return FutureBuilder(
