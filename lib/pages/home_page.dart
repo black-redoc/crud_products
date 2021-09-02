@@ -1,3 +1,6 @@
+import 'package:crud_products/data/product.dart';
+import 'package:crud_products/pages/product_form_page.dart';
+import 'package:crud_products/repository/product_repository.dart';
 import 'package:crud_products/util/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +13,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late final ProductRepository _productRepository;
+
+  @override
+  void initState() {
+    super.initState();
+    _productRepository = ProductRepository.create();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -24,7 +35,29 @@ class _HomePageState extends State<HomePage> {
             ),
           ]
         ),
-      )
+      ),
+      floatingActionButton: _createProductButton(),
+    );
+  }
+
+  Widget _createProductButton() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(100),
+        boxShadow: <BoxShadow>[
+          BoxShadow(color: LocalColors.purple_dark, blurRadius: 2)
+        ]
+      ),
+      child: IconButton(
+        icon: Icon(Icons.add, color: Colors.white),
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => ProductFormPage(
+              isUpdate: false,
+            )
+          )
+        )
+      ),
     );
   }
 
@@ -55,39 +88,78 @@ class _HomePageState extends State<HomePage> {
   );
 
   Widget _productList({ double? width }) {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      itemCount: 10,
-      itemBuilder: (context, idx) {
-        return Container(
-          width: width,
-          decoration: BoxDecoration(
-            border: Border(
-              top: BorderSide(color: Colors.grey, width: 0.5),
-              bottom: (idx == (List.generate(10, (i) => i).length - 1))
-                ? BorderSide(color: Colors.grey, width: 0.5)
-                : BorderSide.none,
-            )
-          ),
-          child: Dismissible(
-            key: Key("$idx"),
-            confirmDismiss: (DismissDirection direction) =>
-                _confirmDismiss(idx),
-            child: ListTile(
-              title: Center(
-                child:
-                  Text(
-                    "$idx",
-                    style: TextStyle(
-                      color: Colors.red
-                    )
+    return FutureBuilder(
+      future: _productRepository.getProducts(),
+      builder: (_, AsyncSnapshot<List<Product>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          final products = snapshot.data ?? [];
+          return ListView.builder(
+            padding: EdgeInsets.zero,
+            shrinkWrap: true,
+            itemCount: products.length,
+            itemBuilder: (context, idx) {
+              return Container(
+                width: width,
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: Colors.grey, width: 0.5),
+                    bottom: (idx == (List.generate(10, (i) => i).length - 1))
+                      ? BorderSide(color: Colors.grey, width: 0.5)
+                      : BorderSide.none,
+                  )
+                ),
+                child: Dismissible(
+                  key: Key("$idx"),
+                  confirmDismiss: (DismissDirection direction) {
+                    if (direction == DismissDirection.startToEnd) {
+                      return _confirmDismiss(products[idx]);
+                    } else {
+                      return _showUpdatePage(products[idx]);
+                    }
+                  },
+                  child: ListTile(
+                    title: Center(
+                      child:
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children:<Widget>[
+                            Text(
+                              "${products[idx].name}",
+                              softWrap: true,
+                              style: TextStyle(
+                                color: LocalColors.purple_dark,
+                              )
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Text(
+                                  "(${products[idx].stock})",
+                                  style: TextStyle(
+                                    color: Colors.grey
+                                  )
+                                ),
+                                SizedBox(width: 10),
+                                Text(
+                                  "\$${products[idx].price}",
+                                  style: TextStyle(
+                                    color: Colors.green
+                                  )
+                                )
+                              ]
+                            )
+                          ]
+                        )
+                    ),
                   ),
-              ),
-            ),
-            background: _slideRightBackground(),
-            secondaryBackground: _slideLeftBackground(),
-          ),
+                  background: _slideRightBackground(),
+                  secondaryBackground: _slideLeftBackground(),
+                ),
+              );
+            }
+          );
+        }
+        return Center(
+          child: CircularProgressIndicator()
         );
       }
     );
@@ -147,7 +219,7 @@ class _HomePageState extends State<HomePage> {
     ),
   );
 
-  Future<bool> _confirmDismiss(int id) async {
+  Future<bool> _confirmDismiss(Product product) async {
     final response = await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -173,7 +245,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.white
                 )
               ),
-              onPressed: () => _deleteInterest(id)
+              onPressed: () => _deleteProduct(product)
             ),
           ],
         );
@@ -186,7 +258,17 @@ class _HomePageState extends State<HomePage> {
     Navigator.of(context).pop();
   }
 
-  void _deleteInterest(id) {
+  void _deleteProduct(Product product) async {
+    await _productRepository.deleteProduct(product);
+  }
 
+  Future<bool> _showUpdatePage(Product product) async {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => ProductFormPage(
+        product: product,
+        isUpdate: true
+      )
+    ));
+    return false;
   }
 }
