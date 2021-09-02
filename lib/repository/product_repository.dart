@@ -34,7 +34,9 @@ class ProductRepository {
   Future<void> deleteProduct(Product product) async {
     return await _products
     .doc(product.name)
-    .delete();
+    .delete()
+    .then((value) => print("${product.name} eliminado con exito!"))
+    .catchError((error) => print("Error al eliminar.\n$error"));
   }
 
   Future<void> updateProduct(Product product) async {
